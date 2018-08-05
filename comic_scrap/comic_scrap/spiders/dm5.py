@@ -56,15 +56,13 @@ class Dm5Spider(scrapy.Spider):
             raise
 
     @staticmethod
-    def parse_datetime(datetime_str):
+    def parse_datetime(datetime_str: str):
         if datetime_str:
             if '昨天' in datetime_str:
                 hour, minute = map(int, re.findall(r'\d\d', datetime_str))
-                yesterday = datetime.now(pytz.timezone(
-                    'Asia/Shanghai')) - timedelta(days=1)
+                yesterday = datetime.now(pytz.timezone('Asia/Shanghai')).date() - timedelta(days=1)
                 no_timezone_datetime = datetime.combine(yesterday, time(hour, minute))
-                timezone_datetime = pytz.timezone('Asia/Shanghai') \
-                                        .localize(no_timezone_datetime)
+                timezone_datetime = pytz.timezone('Asia/Shanghai').localize(no_timezone_datetime)
                 return timezone_datetime.strftime('%s')
             return datetime_str
         return ''
